@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import os
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
@@ -22,11 +23,15 @@ from octofit_tracker.views import (
     LeaderboardViewSet, WorkoutViewSet
 )
 
+# Determine the API base URL from the Codespaces environment variable
 codespace_name = os.environ.get('CODESPACE_NAME')
 if codespace_name:
     base_url = f"https://{codespace_name}-8000.app.github.dev"
 else:
     base_url = "http://localhost:8000"
+
+# Expose base_url to templates and DRF hyperlinked responses
+settings.API_BASE_URL = base_url
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
